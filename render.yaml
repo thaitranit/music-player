@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: music-player
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node server/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        fromDatabase:
+          name: music-player-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true

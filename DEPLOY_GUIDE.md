@@ -94,7 +94,7 @@ git push -u origin main
 
 ### 3.2 Cấu hình Build
 ```
-Build Command: npm install
+Build Command: npm install && npm run build
 Start Command: node server/server.js
 ```
 
