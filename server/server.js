@@ -15,12 +15,12 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/music-play
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from dist folder (React build output)
+// Serve static files from dist folder (React build output) - must come first!
 const distPath = path.join(__dirname, '..', 'dist');
 app.use(express.static(distPath));
 
-// Also serve assests folder (music files)
-app.use(express.static(path.join(__dirname, '..')));
+// Serve only the assests folder (music files, images) from root
+app.use('/assests', express.static(path.join(__dirname, '..', 'assests')));
 
 const Song = require('./models/Song');
 const User = require('./models/User');
