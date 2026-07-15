@@ -112,13 +112,7 @@ app.get('*', (req, res) => {
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    // Fallback to root index.html for dev purposes, but in production dist/ should exist
-    const rootIndexPath = path.join(__dirname, '..', 'index.html');
-    if (fs.existsSync(rootIndexPath)) {
-      res.sendFile(rootIndexPath);
-    } else {
-      res.status(404).send('Not Found');
-    }
+    res.status(404).send('Build not found. Please ensure "npm run build" was executed.');
   }
 });
 
