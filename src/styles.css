@@ -21,7 +21,7 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100vh;
   background-color: var(--d4t-dark-bg);
   font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   color: var(--d4t-text-primary);
@@ -166,8 +166,9 @@ button, input {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background-color: var(--d4t-dark-bg);
+  overflow: hidden;
 }
 
 /* TOP HEADER */

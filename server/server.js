@@ -58,7 +58,13 @@ async function createUser(username, password) {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', mongodb: isDbReady(), storage: isDbReady() ? 'mongodb' : 'in-memory' });
+  res.json({ 
+    status: 'ok', 
+    mongodb: isDbReady(), 
+    storage: isDbReady() ? 'mongodb' : 'in-memory',
+    mongo_uri_defined: !!MONGO_URI,
+    mongo_uri_preview: MONGO_URI ? MONGO_URI.substring(0, 30) + '...' : 'not set'
+  });
 });
 
 // Auth routes with fallback
