@@ -19,7 +19,7 @@ const fallbackSongs = [
   }
 ]
 
-function PlayerPage({ user, onLogout }) {
+function PlayerPage({ user, onLogout, onGoToMyMusic }) {
   const [songs, setSongs] = useState(fallbackSongs)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -204,6 +204,11 @@ function PlayerPage({ user, onLogout }) {
               {item}
             </div>
           ))}
+          <div
+            className="d4t-nav-item" onClick={onGoToMyMusic} style={{ color: 'var(--d4t-primary)' }}>
+            <i className="fas fa-music" style={{ marginRight: '6px' }}></i>
+            Nhạc của tôi
+          </div>
         </nav>
 
         <div className="d4t-header-right">
