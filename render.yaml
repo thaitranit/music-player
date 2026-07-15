@@ -1,16 +1,14 @@
 services:
   - type: web
     name: music-player
-    env: node
+    env: docker
     plan: free
-    buildCommand: npm install && npm run build
-    startCommand: node server/server.js
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
       - key: MONGO_URI
-        fromDatabase:
-          name: music-player-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
