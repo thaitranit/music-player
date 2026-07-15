@@ -8,7 +8,8 @@
     "duration": 245,
     "path": "/assests/music/LoiAnhMuonNoi.mp3",
     "image": "https://avatar-ex-swe.nixcdn.com/playlist/2013/11/06/c/c/a/8/1383713136679_500.jpg",
-    "plays": 1250
+    "plays": 1250,
+    "isPublic": true
   },
   {
     "id": "thuong-em-la-dieu-anh-khong-the-ngo",
@@ -19,7 +20,8 @@
     "duration": 280,
     "path": "/assests/music/ThuongEmLaDieuAnhKhongTheNgo.mp3",
     "image": "https://i.ytimg.com/vi/NryZpeTgLeE/maxresdefault.jpg",
-    "plays": 3500
+    "plays": 3500,
+    "isPublic": true
   },
   {
     "id": "cause-i-love-you",
@@ -30,7 +32,8 @@
     "duration": 210,
     "path": "/assests/music/CauseIloveyou.mp3",
     "image": "https://i.ytimg.com/vi/QQrnrBq9yYg/hqdefault.jpg",
-    "plays": 2800
+    "plays": 2800,
+    "isPublic": true
   },
   {
     "id": "beautiful-in-white",
@@ -41,7 +44,8 @@
     "duration": 230,
     "path": "/assests/music/BeautifulInWhite.mp3",
     "image": "https://i.ytimg.com/vi/Trjrj_fQnIM/mqdefault.jpg",
-    "plays": 5200
+    "plays": 5200,
+    "isPublic": true
   },
   {
     "id": "3107-3",
@@ -52,7 +56,8 @@
     "duration": 195,
     "path": "/assests/music/3107-3.mp3",
     "image": "https://kenh14cdn.com/zoom/320_200/203336854389633024/2021/8/3/photo1627997970218-1627997972375860452471.jpg",
-    "plays": 8900
+    "plays": 8900,
+    "isPublic": true
   },
   {
     "id": "track-tilo-banh-noc",
@@ -63,7 +68,8 @@
     "duration": 310,
     "path": "/assests/music/TrackTiloBanhNoc.mp3",
     "image": "https://thumbnailer.mixcloud.com/unsafe/300x300/extaudio/0/a/7/0/ab1f-35df-4ed9-9538-46ce82b7bce0",
-    "plays": 4100
+    "plays": 4100,
+    "isPublic": true
   },
   {
     "id": "hay-trao-cho-anh",
@@ -74,7 +80,8 @@
     "duration": 265,
     "path": "/assests/music/HayTraoChoAnh.mp3",
     "image": "https://dep.com.vn/wp-content/uploads/2019/07/deponline-sontung.jpg",
-    "plays": 15600
+    "plays": 15600,
+    "isPublic": true
   },
   {
     "id": "song-gio",
@@ -85,6 +92,283 @@
     "duration": 220,
     "path": "/assests/music/SongGio.mp3",
     "image": "https://lyricvn.com/wp-content/uploads/2019/10/836cf31f036fb8f89b78cfd07cd77477.jpg",
-    "plays": 12300
+    "plays": 12300,
+    "isPublic": true
+  },
+  {
+    "id": "cho-em-trong-dem",
+    "name": "Cho Em Trong Đêm",
+    "singer": "Unknown Artist",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 240,
+    "path": "/assests/music/ChoEmTrongDem.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 1800,
+    "isPublic": true
+  },
+  {
+    "id": "co-hen-voi-thanh-xuan",
+    "name": "Có Hẹn Với Thanh Xuân",
+    "singer": "Unknown Artist",
+    "album": "Single",
+    "genre": "Pop",
+    "duration": 235,
+    "path": "/assests/music/CoHenVoiThanhXuan.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 2200,
+    "isPublic": true
+  },
+  {
+    "id": "i-do",
+    "name": "I Do",
+    "singer": "Unknown Artist",
+    "album": "Single",
+    "genre": "Pop",
+    "duration": 225,
+    "path": "/assests/music/IDo.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 3100,
+    "isPublic": true
+  },
+  {
+    "id": "anh-chang-sao-ma",
+    "name": "Anh Chẳng Sao Mà",
+    "singer": "Khang Việt",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 250,
+    "path": "/assests/music/Khang Việt – Anh Chẳng Sao Mà.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 4500,
+    "isPublic": true
+  },
+  {
+    "id": "kho-ve-nu-cuoi",
+    "name": "Kho Vẻ Nụ Cười",
+    "singer": "Dat G, Du Uyên",
+    "album": "Single",
+    "genre": "Hip Hop",
+    "duration": 205,
+    "path": "/assests/music/Kho Ve Nu Cuoi - Dat G Du Uyen (NhacPro.net).mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 6700,
+    "isPublic": true
+  },
+  {
+    "id": "xung-doi-cuoi-thoi",
+    "name": "Xứng Đôi Cưới Thôi",
+    "singer": "Lê Thiện Hiếu",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 270,
+    "path": "/assests/music/Lê Thiện Hiếu – Xứng Đôi Cưới Thôi.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 5300,
+    "isPublic": true
+  },
+  {
+    "id": "muon-roi-ma-sao-con",
+    "name": "Muộn Rồi Mà Sao Còn",
+    "singer": "Unknown Artist",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 260,
+    "path": "/assests/music/MuonRoiMaSaoCon.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 3900,
+    "isPublic": true
+  },
+  {
+    "id": "mai-mai-ben-nhau",
+    "name": "Mãi Mãi Bên Nhau",
+    "singer": "Noo Phước Thịnh",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 290,
+    "path": "/assests/music/Noo Phước Thịnh – Mãi Mãi Bên Nhau.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 4800,
+    "isPublic": true
+  },
+  {
+    "id": "ok-binz",
+    "name": "OK",
+    "singer": "Binz",
+    "album": "Single",
+    "genre": "Hip Hop",
+    "duration": 215,
+    "path": "/assests/music/OK-Binz.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 7200,
+    "isPublic": true
+  },
+  {
+    "id": "yeu-la-tha-thu",
+    "name": "Yêu Là Tha Thu",
+    "singer": "OnlyC",
+    "album": "Em Chưa 18 OST",
+    "genre": "Ballad",
+    "duration": 245,
+    "path": "/assests/music/OnlyC – Yêu Là Tha Thu (Em Chưa 18 OST).mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 9100,
+    "isPublic": true
+  },
+  {
+    "id": "tung-yeu",
+    "name": "Từng Yêu",
+    "singer": "Phan Duy Anh",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 255,
+    "path": "/assests/music/Phan Duy Anh – Từng Yêu.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 4200,
+    "isPublic": true
+  },
+  {
+    "id": "co-chang-trai-viet-len-cay",
+    "name": "Có Chàng Trai Viết Lên Cây",
+    "singer": "Phan Mạnh Quỳnh",
+    "album": "Single",
+    "genre": "Pop",
+    "duration": 275,
+    "path": "/assests/music/Phan Mạnh Quỳnh – Có Chàng Trai Viết Lên Cây.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 8500,
+    "isPublic": true
+  },
+  {
+    "id": "sai-lam-cua-anh",
+    "name": "Sai Lầm Của Anh",
+    "singer": "Đình Dũng",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 265,
+    "path": "/assests/music/Sai-Lam-Cua-Anh-Dinh-Dung.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 5600,
+    "isPublic": true
+  },
+  {
+    "id": "sao-anh-chua-ve-nha",
+    "name": "Sao Anh Chưa Về Nhà",
+    "singer": "AMEE, Ricky Star",
+    "album": "Single",
+    "genre": "Pop",
+    "duration": 225,
+    "path": "/assests/music/Sao-Anh-Chua-Ve-Nha-AMEE-Ricky-Star.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 11200,
+    "isPublic": true
+  },
+  {
+    "id": "chay-ngay-di",
+    "name": "Chạy Ngay Đi",
+    "singer": "Sơn Tùng M-TP",
+    "album": "Single",
+    "genre": "V-Pop",
+    "duration": 280,
+    "path": "/assests/music/Sơn Tùng M-TP – Chạy Ngay Đi.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 18900,
+    "isPublic": true
+  },
+  {
+    "id": "the-void-4",
+    "name": "THE VOID #4",
+    "singer": "C'Six",
+    "album": "Single",
+    "genre": "Hip Hop",
+    "duration": 200,
+    "path": "/assests/music/THE VOID #4 - C'Six.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 3400,
+    "isPublic": true
+  },
+  {
+    "id": "sai-nguoi-sai-thoi-diem",
+    "name": "Sai Người Sai Thời Điểm",
+    "singer": "Thanh Hưng",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 270,
+    "path": "/assests/music/Thanh Hưng – Sai Người Sai Thời Điểm.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 6100,
+    "isPublic": true
+  },
+  {
+    "id": "neu-la-anh",
+    "name": "Nếu Là Anh",
+    "singer": "The Men",
+    "album": "The Best of The Men",
+    "genre": "Pop",
+    "duration": 250,
+    "path": "/assests/music/The Men – Nếu Là Anh.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 3800,
+    "isPublic": true
+  },
+  {
+    "id": "love-me-more",
+    "name": "Love Me More",
+    "singer": "The Sheep",
+    "album": "Single",
+    "genre": "Pop",
+    "duration": 215,
+    "path": "/assests/music/The Sheep – Love Me More.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 2900,
+    "isPublic": true
+  },
+  {
+    "id": "thich-thi-den",
+    "name": "Thích Thì Đến",
+    "singer": "Lê Bảo Bình",
+    "album": "Single",
+    "genre": "Pop",
+    "duration": 230,
+    "path": "/assests/music/Thich-Thi-Den-Le-Bao-Binh.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 7400,
+    "isPublic": true
+  },
+  {
+    "id": "cau-vong-khuyet",
+    "name": "Cầu Vồng Khuyết",
+    "singer": "Tuấn Hưng",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 285,
+    "path": "/assests/music/Tuấn Hưng – Cầu Vồng Khuyết.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 5900,
+    "isPublic": true
+  },
+  {
+    "id": "cau-hon",
+    "name": "Cầu Hôn",
+    "singer": "Văn Mai Hương",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 260,
+    "path": "/assests/music/Văn Mai Hương – Cầu Hôn.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 8200,
+    "isPublic": true
+  },
+  {
+    "id": "yeu-nhau-nhe-ban-than",
+    "name": "Yêu Nhau Nhé Bạn Thân",
+    "singer": "Unknown Artist",
+    "album": "Single",
+    "genre": "Pop",
+    "duration": 220,
+    "path": "/assests/music/YeuNhauNheBanThan.mp3",
+    "image": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=music%20album%20cover%20dark%20theme&image_size=square_hd",
+    "plays": 4700,
+    "isPublic": true
   }
 ]

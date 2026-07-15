@@ -60,15 +60,17 @@ const start = async () => {
     });
     console.log('✅ MongoDB connected successfully');
 
-    // Seed initial songs if empty
+    // Seed initial songs - delete old data and seed new
     const Song = require('./models/Song');
     const songsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'songs.json'), 'utf8'));
-    const count = await Song.countDocuments();
     
-    if (count === 0) {
-      await Song.insertMany(songsData);
-      console.log('✅ Seeded initial songs data');
-    }
+    // Delete all existing songs
+    await Song.deleteMany({});
+    console.log('🗑️  Deleted old songs data');
+    
+    // Insert new songs
+    await Song.insertMany(songsData);
+    console.log('✅ Seeded new songs data');
   } catch (error) {
     console.warn('⚠️ MongoDB unavailable:', error.message);
   }
