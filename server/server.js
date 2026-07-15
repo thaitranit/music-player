@@ -19,8 +19,13 @@ app.use(express.json());
 const distPath = path.join(__dirname, '..', 'dist');
 app.use(express.static(distPath));
 
-// Serve only the assests folder (music files, images) from root
-app.use('/assests', express.static(path.join(__dirname, '..', 'assests')));
+// Block access to /src folder to prevent serving JSX files directly
+app.use('/src', (req, res) => {
+  res.status(404).send('Not Found');
+});
+
+// Serve other static files from root (like favicon, etc.)
+app.use(express.static(path.join(__dirname, '..')));
 
 const Song = require('./models/Song');
 const User = require('./models/User');
@@ -103,7 +108,18 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+  const indexPath = path.join(__dirname, '..', 'dist', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    // Fallback to root index.html for dev purposes, but in production dist/ should exist
+    const rootIndexPath = path.join(__dirname, '..', 'index.html');
+    if (fs.existsSync(rootIndexPath)) {
+      res.sendFile(rootIndexPath);
+    } else {
+      res.status(404).send('Not Found');
+    }
+  }
 });
 
 const start = async () => {
