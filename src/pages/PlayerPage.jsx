@@ -28,7 +28,6 @@ function PlayerPage({ user, onLogout }) {
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
   const [volume, setVolume] = useState(1)
-  const [audioReady, setAudioReady] = useState(false)
 
   const currentSong = songs[currentIndex] || null
 
@@ -59,7 +58,7 @@ function PlayerPage({ user, onLogout }) {
   }
 
   const togglePlay = async () => {
-    const audio = document.getElementById('react-audio')
+    const audio = document.getElementById('zing-audio')
     if (!audio || !currentSong) return
 
     if (isPlaying) {
@@ -94,7 +93,7 @@ function PlayerPage({ user, onLogout }) {
   }
 
   useEffect(() => {
-    const audio = document.getElementById('react-audio')
+    const audio = document.getElementById('zing-audio')
     if (!audio || !currentSong) return
 
     audio.src = currentSong.path
@@ -102,12 +101,11 @@ function PlayerPage({ user, onLogout }) {
     setProgress(0)
     setCurrentTime(0)
     setDuration(0)
-    setAudioReady(false)
     setIsPlaying(false)
   }, [currentSong])
 
   useEffect(() => {
-    const audio = document.getElementById('react-audio')
+    const audio = document.getElementById('zing-audio')
     if (!audio) return
 
     const handleTimeUpdate = () => {
@@ -118,7 +116,6 @@ function PlayerPage({ user, onLogout }) {
 
     const handleLoaded = () => {
       setDuration(audio.duration || 0)
-      setAudioReady(true)
     }
 
     const handleEnded = () => {
@@ -141,17 +138,16 @@ function PlayerPage({ user, onLogout }) {
   }, [currentSong, isRepeat, isRandom, currentIndex])
 
   useEffect(() => {
-    const audio = document.getElementById('react-audio')
+    const audio = document.getElementById('zing-audio')
     if (audio) audio.volume = volume
   }, [volume])
 
-  const handleSongClick = (song) => {
-    const idx = songs.findIndex((s) => s.id === song.id)
-    if (idx !== -1) {
-      setCurrentIndex(idx)
-      // Auto play on select
+  const handleSongClick = (song, index) => {
+    const actualIndex = songs.findIndex((s) => s.id === song.id)
+    if (actualIndex !== -1) {
+      setCurrentIndex(actualIndex)
       setTimeout(() => {
-        const audio = document.getElementById('react-audio')
+        const audio = document.getElementById('zing-audio')
         if (audio) {
           audio.play().then(() => setIsPlaying(true)).catch(err => console.log(err))
         }
@@ -159,240 +155,193 @@ function PlayerPage({ user, onLogout }) {
     }
   }
 
+  const handleProgressChange = (e) => {
+    const audio = document.getElementById('zing-audio')
+    if (!audio || !audio.duration) return
+    const newProgress = Number(e.target.value)
+    const seekTo = (newProgress / 100) * audio.duration
+    audio.currentTime = seekTo
+    setProgress(newProgress)
+  }
+
   return (
-    <div className="spotify-container">
-      {/* LEFT SIDEBAR */}
-      <div className="spotify-sidebar">
-        <div className="spotify-logo">
-          <i className="fab fa-spotify" />
-          <span>Spotify</span>
+    <div className="zing-container">
+      {/* TOP HEADER */}
+      <header className="zing-header">
+        <div className="zing-logo">
+          <i className="fas fa-music"></i>
+          <span>Zing MP3</span>
         </div>
-        
-        <div className="sidebar-menu">
-          <div className="menu-item active">
-            <i className="fas fa-home" />
-            <span>Trang chủ</span>
-          </div>
-          <div className="menu-item">
-            <i className="fas fa-compass" />
-            <span>Khám phá</span>
-          </div>
-          <div className="menu-item">
-            <i className="fas fa-book-open" />
-            <span>Thư viện</span>
-          </div>
+        <div className="zing-search">
+          <i className="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Tìm kiếm bài hát, nghệ sĩ..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-
-        <div className="sidebar-library">
-          <div className="library-header">
-            <i className="fas fa-music" />
-            <span>Danh sách bài hát</span>
+        <div className="zing-header-right">
+          <div className="zing-user">
+            <i className="fas fa-user-circle"></i>
+            <span>{user.username}</span>
           </div>
-          
-          <div className="sidebar-search">
-            <i className="fas fa-search search-icon-inner" />
-            <input
-              type="text"
-              placeholder="Tìm kiếm bài hát..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-
-          <div className="sidebar-playlist-list">
-            {visibleSongs.map((song) => (
-              <div 
-                key={song.id} 
-                className={`sidebar-playlist-item ${currentSong?.id === song.id ? 'active' : ''}`}
-                onClick={() => handleSongClick(song)}
-              >
-                <div className="playlist-mini-thumb" style={{ backgroundImage: `url('${song.image}')` }} />
-                <div className="playlist-mini-info">
-                  <div className="playlist-mini-name">{song.name}</div>
-                  <div className="playlist-mini-singer">{song.singer}</div>
-                </div>
-                {currentSong?.id === song.id && isPlaying && (
-                  <div className="playing-indicator">
-                    <span className="bar" />
-                    <span className="bar" />
-                    <span className="bar" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          <button className="zing-logout-btn" onClick={onLogout}>
+            Đăng xuất
+          </button>
         </div>
-      </div>
+      </header>
 
-      {/* MAIN CONTENT AREA */}
-      <div className="spotify-main">
-        {/* HEADER */}
-        <div className="main-header">
-          <div className="navigation-arrows">
-            <button className="arrow-btn"><i className="fas fa-chevron-left" /></button>
-            <button className="arrow-btn"><i className="fas fa-chevron-right" /></button>
-          </div>
-          <div className="header-right">
-            <div className="user-profile">
-              <i className="fas fa-user-circle" />
-              <span>{user.username}</span>
+      {/* MAIN WRAPPER */}
+      <div className="zing-main-wrapper">
+        {/* SIDEBAR */}
+        <aside className="zing-sidebar">
+          <div className="zing-sidebar-menu">
+            <div className="zing-sidebar-item active">
+              <i className="fas fa-home"></i>
+              <span>Trang chủ</span>
             </div>
-            <button className="spotify-logout-btn" onClick={onLogout}>
-              Đăng xuất
-            </button>
+            <div className="zing-sidebar-item">
+              <i className="fas fa-compass"></i>
+              <span>Khám phá</span>
+            </div>
+            <div className="zing-sidebar-item">
+              <i className="fas fa-chart-line"></i>
+              <span>Top 100</span>
+            </div>
+            <div className="zing-sidebar-item">
+              <i className="fas fa-heart"></i>
+              <span>Yêu thích</span>
+            </div>
           </div>
-        </div>
+        </aside>
 
-        {/* HERO BANNER - CURRENT SONG */}
-        <div className="spotify-hero" style={{ 
-          background: currentSong 
-            ? `linear-gradient(rgba(0,0,0,0.4), #121212), url('${currentSong.image}') no-repeat center/cover`
-            : 'linear-gradient(#4f46e5, #121212)'
-        }}>
-          <div className="hero-content">
-            <div className="hero-badge">PLAYLIST ĐANG PHÁT</div>
-            <h1 className="hero-title">{currentSong?.name || 'Chọn một bài hát'}</h1>
-            <p className="hero-artist">
-              <i className="fas fa-user" /> {currentSong?.singer || 'Hệ thống'} • {songs.length} bài hát
-            </p>
-          </div>
-        </div>
+        {/* MAIN CONTENT */}
+        <main className="zing-main">
+          {/* HERO */}
+          <section className="zing-hero">
+            <div className="zing-hero-content">
+              <div className="zing-hero-badge">Đang phát</div>
+              <h1 className="zing-hero-title">{currentSong?.name || 'Chọn một bài hát'}</h1>
+              <p className="zing-hero-artist">{currentSong?.singer || 'Zing MP3'} • {songs.length} bài hát</p>
+            </div>
+          </section>
 
-        {/* SONG LIST TABLE */}
-        <div className="tracklist-container">
-          <div className="tracklist-header">
-            <span className="col-num">#</span>
-            <span className="col-title">TIÊU ĐỀ</span>
-            <span className="col-album">NGHỆ SĨ</span>
-            <span className="col-duration"><i className="far fa-clock" /></span>
-          </div>
-
-          <div className="tracklist-body">
-            {visibleSongs.map((song, index) => {
-              const isCurrent = currentSong?.id === song.id;
-              return (
-                <div 
-                  key={song.id} 
-                  className={`tracklist-row ${isCurrent ? 'active' : ''}`}
-                  onClick={() => handleSongClick(song)}
-                >
-                  <span className="col-num">
-                    {isCurrent && isPlaying ? (
-                      <i className="fas fa-volume-up text-spotify-green" />
-                    ) : (
-                      index + 1
-                    )}
-                  </span>
-                  <span className="col-title">
-                    <img src={song.image} alt={song.name} className="track-thumb-img" />
-                    <div className="track-name-desc">
-                      <div className={`track-title-text ${isCurrent ? 'text-spotify-green' : ''}`}>
-                        {song.name}
-                      </div>
+          {/* SONG LIST */}
+          <section>
+            <h2 className="zing-section-title">Danh sách phát</h2>
+            <div className="zing-song-list">
+              {visibleSongs.map((song, index) => {
+                const isCurrent = currentSong?.id === song.id;
+                const originalIndex = songs.findIndex(s => s.id === song.id);
+                return (
+                  <div
+                    key={song.id}
+                    className={`zing-song-item ${isCurrent ? 'active' : ''}`}
+                    onClick={() => handleSongClick(song, index)}
+                  >
+                    <div className="zing-song-num">
+                      {isCurrent && isPlaying ? (
+                        <div className="zing-playing-indicator">
+                          <span className="zing-playing-bar"></span>
+                          <span className="zing-playing-bar"></span>
+                          <span className="zing-playing-bar"></span>
+                          <span className="zing-playing-bar"></span>
+                        </div>
+                      ) : (
+                        <span>{originalIndex + 1}</span>
+                      )}
                     </div>
-                  </span>
-                  <span className="col-album">{song.singer}</span>
-                  <span className="col-duration">
-                    <button className="track-row-play-btn">
-                      <i className={isCurrent && isPlaying ? "fas fa-pause" : "fas fa-play"} />
+                    <img src={song.image} alt={song.name} className="zing-song-thumb" />
+                    <div className="zing-song-info">
+                      <div className="zing-song-name">{song.name}</div>
+                      <div className="zing-song-singer">{song.singer}</div>
+                    </div>
+                    <div className="zing-song-duration">{formatTime(240)}</div>
+                    <button className="zing-song-play-btn">
+                      <i className={isCurrent && isPlaying ? 'fas fa-pause' : 'fas fa-play'}></i>
                     </button>
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </main>
       </div>
 
-      {/* BOTTOM PLAYBACK BAR */}
-      <div className="spotify-player-bar">
-        {/* Track info */}
-        <div className="player-track-info">
+      {/* BOTTOM PLAYER */}
+      <footer className="zing-player">
+        <div className="zing-player-left">
           {currentSong && (
             <>
-              <img src={currentSong.image} alt={currentSong.name} className="player-track-thumb" />
-              <div className="player-track-details">
-                <div className="player-track-name">{currentSong.name}</div>
-                <div className="player-track-artist">{currentSong.singer}</div>
+              <img src={currentSong.image} alt={currentSong.name} className="zing-player-thumb" />
+              <div className="zing-player-info">
+                <div className="zing-player-name">{currentSong.name}</div>
+                <div className="zing-player-artist">{currentSong.singer}</div>
               </div>
-              <button className="player-heart-btn">
-                <i className="far fa-heart" />
+              <button className="zing-player-like">
+                <i className="far fa-heart"></i>
               </button>
             </>
           )}
         </div>
 
-        {/* Middle controls */}
-        <div className="player-main-controls">
-          <div className="playback-buttons">
-            <button 
-              className={`control-icon-btn ${isRandom ? 'active' : ''}`} 
+        <div className="zing-player-center">
+          <div className="zing-player-controls">
+            <button
+              className={`zing-player-btn ${isRandom ? 'active' : ''}`}
               onClick={() => setIsRandom(!isRandom)}
-              title="Trộn bài"
             >
-              <i className="fas fa-random" />
+              <i className="fas fa-random"></i>
             </button>
-            <button className="control-icon-btn" onClick={playPrev} title="Bài trước">
-              <i className="fas fa-step-backward" />
+            <button className="zing-player-btn" onClick={playPrev}>
+              <i className="fas fa-step-backward"></i>
             </button>
-            <button className="play-circle-btn" onClick={togglePlay} title={isPlaying ? "Tạm dừng" : "Phát"}>
-              <i className={isPlaying ? "fas fa-pause" : "fas fa-play"} />
+            <button className="zing-player-play-btn" onClick={togglePlay}>
+              <i className={isPlaying ? 'fas fa-pause' : 'fas fa-play'}></i>
             </button>
-            <button className="control-icon-btn" onClick={playNext} title="Bài tiếp theo">
-              <i className="fas fa-step-forward" />
+            <button className="zing-player-btn" onClick={playNext}>
+              <i className="fas fa-step-forward"></i>
             </button>
-            <button 
-              className={`control-icon-btn ${isRepeat ? 'active' : ''}`} 
+            <button
+              className={`zing-player-btn ${isRepeat ? 'active' : ''}`}
               onClick={() => setIsRepeat(!isRepeat)}
-              title="Lặp lại"
             >
-              <i className="fas fa-redo" />
+              <i className="fas fa-redo"></i>
             </button>
           </div>
-
-          <div className="progress-timeline">
-            <span className="time-text">{formatTime(currentTime)}</span>
-            <div className="timeline-slider-container">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={progress}
-                onChange={(e) => {
-                  const audio = document.getElementById('react-audio')
-                  if (!audio || !audio.duration) return
-                  const seekTo = (Number(e.target.value) / 100) * audio.duration
-                  audio.currentTime = seekTo
-                  setProgress(Number(e.target.value))
-                }}
-                className="timeline-slider"
-              />
-            </div>
-            <span className="time-text">{formatTime(duration)}</span>
-          </div>
-        </div>
-
-        {/* Right tools / Volume */}
-        <div className="player-right-controls">
-          <i className="fas fa-list-ul extra-icon" title="Danh sách chờ" />
-          <i className="fas fa-laptop-code extra-icon" title="Thiết bị kết nối" />
-          <div className="volume-slider-container">
-            <i className={volume === 0 ? "fas fa-volume-mute" : volume < 0.5 ? "fas fa-volume-down" : "fas fa-volume-up"} />
-            <input 
-              type="range" 
-              min="0" 
-              max="1" 
-              step="0.01" 
-              value={volume} 
-              onChange={(e) => setVolume(Number(e.target.value))} 
-              className="volume-slider"
+          <div className="zing-player-progress">
+            <span className="zing-player-time">{formatTime(currentTime)}</span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={progress}
+              onChange={handleProgressChange}
+              className="zing-player-slider"
             />
-            <span className="volume-percent">{Math.round(volume * 100)}%</span>
+            <span className="zing-player-time">{formatTime(duration)}</span>
           </div>
         </div>
-      </div>
 
-      <audio id="react-audio" preload="metadata" />
+        <div className="zing-player-right">
+          <div className="zing-player-volume">
+            <i className={volume === 0 ? 'fas fa-volume-mute' : volume < 0.5 ? 'fas fa-volume-down' : 'fas fa-volume-up'}></i>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={(e) => setVolume(Number(e.target.value))}
+              className="zing-player-volume-slider"
+            />
+            <span className="zing-player-volume-percent">{Math.round(volume * 100)}%</span>
+          </div>
+        </div>
+      </footer>
+
+      <audio id="zing-audio" preload="metadata" />
     </div>
   )
 }
