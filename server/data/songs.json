@@ -3,56 +3,88 @@
     "id": "loi-anh-muon-noi",
     "name": "Lời anh muốn nói",
     "singer": "The Men",
+    "album": "The Best of The Men",
+    "genre": "Pop",
+    "duration": 245,
     "path": "/assests/music/LoiAnhMuonNoi.mp3",
-    "image": "https://avatar-ex-swe.nixcdn.com/playlist/2013/11/06/c/c/a/8/1383713136679_500.jpg"
+    "image": "https://avatar-ex-swe.nixcdn.com/playlist/2013/11/06/c/c/a/8/1383713136679_500.jpg",
+    "plays": 1250
   },
   {
     "id": "thuong-em-la-dieu-anh-khong-the-ngo",
     "name": "Thương Em Là Điều Anh Không Thể Ngờ",
     "singer": "Noo Phước Thịnh",
+    "album": "Single",
+    "genre": "Ballad",
+    "duration": 280,
     "path": "/assests/music/ThuongEmLaDieuAnhKhongTheNgo.mp3",
-    "image": "https://i.ytimg.com/vi/NryZpeTgLeE/maxresdefault.jpg"
+    "image": "https://i.ytimg.com/vi/NryZpeTgLeE/maxresdefault.jpg",
+    "plays": 3500
   },
   {
     "id": "cause-i-love-you",
     "name": "Cause I Love You",
     "singer": "Noo Phước Thịnh",
+    "album": "Single",
+    "genre": "Pop",
+    "duration": 210,
     "path": "/assests/music/CauseIloveyou.mp3",
-    "image": "https://i.ytimg.com/vi/QQrnrBq9yYg/hqdefault.jpg"
+    "image": "https://i.ytimg.com/vi/QQrnrBq9yYg/hqdefault.jpg",
+    "plays": 2800
   },
   {
     "id": "beautiful-in-white",
     "name": "Beautiful In White",
     "singer": "Shane Filan",
+    "album": "Love Always",
+    "genre": "Pop",
+    "duration": 230,
     "path": "/assests/music/BeautifulInWhite.mp3",
-    "image": "https://i.ytimg.com/vi/Trjrj_fQnIM/mqdefault.jpg"
+    "image": "https://i.ytimg.com/vi/Trjrj_fQnIM/mqdefault.jpg",
+    "plays": 5200
   },
   {
     "id": "3107-3",
     "name": "3107-3",
     "singer": "Dươngg x Nâu x Titie",
+    "album": "3107 Collection",
+    "genre": "Hip Hop",
+    "duration": 195,
     "path": "/assests/music/3107-3.mp3",
-    "image": "https://kenh14cdn.com/zoom/320_200/203336854389633024/2021/8/3/photo1627997970218-1627997972375860452471.jpg"
+    "image": "https://kenh14cdn.com/zoom/320_200/203336854389633024/2021/8/3/photo1627997970218-1627997972375860452471.jpg",
+    "plays": 8900
   },
   {
     "id": "track-tilo-banh-noc",
     "name": "Track quẩy Tilo banh nóc",
     "singer": "DJ Tilo",
+    "album": "Remix Hits",
+    "genre": "EDM",
+    "duration": 310,
     "path": "/assests/music/TrackTiloBanhNoc.mp3",
-    "image": "https://thumbnailer.mixcloud.com/unsafe/300x300/extaudio/0/a/7/0/ab1f-35df-4ed9-9538-46ce82b7bce0"
+    "image": "https://thumbnailer.mixcloud.com/unsafe/300x300/extaudio/0/a/7/0/ab1f-35df-4ed9-9538-46ce82b7bce0",
+    "plays": 4100
   },
   {
     "id": "hay-trao-cho-anh",
     "name": "Hãy trao cho anh",
     "singer": "Sơn Tùng M-TP",
+    "album": "Single",
+    "genre": "V-Pop",
+    "duration": 265,
     "path": "/assests/music/HayTraoChoAnh.mp3",
-    "image": "https://dep.com.vn/wp-content/uploads/2019/07/deponline-sontung.jpg"
+    "image": "https://dep.com.vn/wp-content/uploads/2019/07/deponline-sontung.jpg",
+    "plays": 15600
   },
   {
     "id": "song-gio",
     "name": "Sóng Gió",
     "singer": "Jack",
+    "album": "Single",
+    "genre": "V-Pop",
+    "duration": 220,
     "path": "/assests/music/SongGio.mp3",
-    "image": "https://lyricvn.com/wp-content/uploads/2019/10/836cf31f036fb8f89b78cfd07cd77477.jpg"
+    "image": "https://lyricvn.com/wp-content/uploads/2019/10/836cf31f036fb8f89b78cfd07cd77477.jpg",
+    "plays": 12300
   }
 ]

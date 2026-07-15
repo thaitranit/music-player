@@ -2,8 +2,6 @@ require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
@@ -15,97 +13,26 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/music-play
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from dist folder (React build output) - must come first!
 const distPath = path.join(__dirname, '..', 'dist');
 app.use(express.static(distPath));
 
-// Block access to /src folder to prevent serving JSX files directly
 app.use('/src', (req, res) => {
   res.status(404).send('Not Found');
 });
 
-// Serve other static files from root (like favicon, etc.)
 app.use(express.static(path.join(__dirname, '..')));
 
 const Song = require('./models/Song');
-const User = require('./models/User');
-
-const songsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'songs.json'), 'utf8'));
-let inMemoryUsers = [];
-let inMemorySongs = [...songsData];
-
-const isDbReady = () => mongoose.connection.readyState === 1;
-
-async function getSongs() {
-  if (isDbReady()) {
-    return Song.find({});
-  }
-  return inMemorySongs;
-}
-
-async function findUser(username) {
-  if (isDbReady()) {
-    return User.findOne({ username });
-  }
-  return inMemoryUsers.find((user) => user.username === username) || null;
-}
-
-async function createUser(username, password) {
-  if (isDbReady()) {
-    return User.create({ username, password });
-  }
-
-  const user = { _id: `${Date.now()}`, username, password };
-  inMemoryUsers.push(user);
-  return user;
-}
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
+  res.json({ status: 'ok', mongodb: mongoose.connection.readyState === 1 });
 });
 
-app.get('/api/songs', async (req, res) => {
-  try {
-    const songs = await getSongs();
-    res.json(songs);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+const authRoutes = require('./routes/authRoutes');
+const songRoutes = require('./routes/songRoutes');
 
-app.post('/api/auth/register', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    if (!username || !password) return res.status(400).json({ message: 'Username and password are required' });
-
-    const existing = await findUser(username);
-    if (existing) return res.status(409).json({ message: 'User already exists' });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await createUser(username, hashedPassword);
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
-    res.status(201).json({ user: { username: user.username }, token });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-app.post('/api/auth/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await findUser(username);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ message: 'Wrong password' });
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
-    res.json({ user: { username: user.username }, token });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+app.use('/api/auth', authRoutes);
+app.use('/api/songs', songRoutes);
 
 app.get('*', (req, res) => {
   const indexPath = path.join(__dirname, '..', 'dist', 'index.html');
@@ -119,21 +46,26 @@ app.get('*', (req, res) => {
 const start = async () => {
   try {
     await mongoose.connect(MONGO_URI, {
-      connectTimeoutMS: 3000,
-      serverSelectionTimeoutMS: 3000
+      connectTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 10000
     });
-    console.log('MongoDB connected');
+    console.log('✅ MongoDB connected successfully');
 
+    const songsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'songs.json'), 'utf8'));
     const count = await Song.countDocuments();
+    
     if (count === 0) {
       await Song.insertMany(songsData);
-      console.log('Seeded songs');
+      console.log('✅ Seeded initial songs data');
     }
   } catch (error) {
-    console.warn('MongoDB unavailable, continuing with in-memory storage:', error.message);
+    console.warn('⚠️ MongoDB unavailable:', error.message);
   }
 
-  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
+  });
 };
 
 start();
