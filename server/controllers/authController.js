@@ -3,6 +3,25 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const authController = {
+  // Create default admin if not exists
+  createDefaultAdmin: async () => {
+    try {
+      const adminExists = await User.findOne({ username: 'admin' });
+      if (!adminExists) {
+        const hashedPassword = await bcrypt.hash('admin123', 10);
+        const admin = new User({ 
+          username: 'admin', 
+          password: hashedPassword, 
+          isAdmin: true 
+        });
+        await admin.save();
+        console.log('✅ Default admin created (username: admin, password: admin123)');
+      }
+    } catch (error) {
+      console.error('❌ Error creating default admin:', error.message);
+    }
+  },
+
   register: async (req, res) => {
     try {
       const { username, password } = req.body;
@@ -27,7 +46,7 @@ const authController = {
       );
 
       res.status(201).json({
-        user: { id: user._id, username: user.username },
+        user: { id: user._id, username: user.username, isAdmin: user.isAdmin },
         token
       });
     } catch (error) {
@@ -56,7 +75,7 @@ const authController = {
       );
 
       res.json({
-        user: { id: user._id, username: user.username },
+        user: { id: user._id, username: user.username, isAdmin: user.isAdmin },
         token
       });
     } catch (error) {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const songController = require('../controllers/songController');
-const auth = require('../middleware/auth');
+const { auth, adminAuth } = require('../middleware/auth');
 const { uploadMusic } = require('../config/upload');
 
 // Public routes
@@ -15,7 +15,9 @@ router.post('/:id/play', songController.incrementPlayCount);
 router.get('/user/my-songs', auth, songController.getUserSongs);
 router.post('/upload', auth, uploadMusic.single('musicFile'), songController.uploadAndCreateSong);
 router.post('/', auth, songController.createSong);
-router.put('/:id', auth, songController.updateSong);
-router.delete('/:id', auth, songController.deleteSong);
+
+// Admin-only routes (chỉ admin mới được sửa/xóa)
+router.put('/:id', adminAuth, songController.updateSong);
+router.delete('/:id', adminAuth, songController.deleteSong);
 
 module.exports = router;

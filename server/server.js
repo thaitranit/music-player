@@ -60,6 +60,10 @@ const start = async () => {
     });
     console.log('✅ MongoDB connected successfully');
 
+    // Create default admin
+    const authController = require('./controllers/authController');
+    await authController.createDefaultAdmin();
+
     // Seed initial songs - delete old data and seed new
     const Song = require('./models/Song');
     const songsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'songs.json'), 'utf8'));

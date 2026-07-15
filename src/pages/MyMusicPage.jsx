@@ -5,6 +5,7 @@ function MyMusicPage({ user, onBack, onLogout }) {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
+  const [editingSong, setEditingSong] = useState(null);
   const [uploadForm, setUploadForm] = useState({
     name: '',
     singer: '',
@@ -13,13 +14,28 @@ function MyMusicPage({ user, onBack, onLogout }) {
     isPublic: true,
     musicFile: null
   });
+  const [editForm, setEditForm] = useState({
+    name: '',
+    singer: '',
+    album: '',
+    genre: 'Pop',
+    isPublic: true,
+    image: ''
+  });
 
-  // Lấy bài hát của user
+  // Lấy tất cả bài hát (cho admin) hoặc bài hát của user
   useEffect(() => {
-    const fetchMySongs = async () => {
+    const fetchSongs = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('/api/songs/user/my-songs', {
+        let url = '/api/songs/user/my-songs';
+        
+        // Nếu là admin, lấy tất cả bài hát
+        if (user?.isAdmin) {
+          url = '/api/songs';
+        }
+        
+        const response = await fetch(url, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -36,7 +52,7 @@ function MyMusicPage({ user, onBack, onLogout }) {
     };
 
     if (user) {
-      fetchMySongs();
+      fetchSongs();
     }
   }, [user]);
 
@@ -55,6 +71,15 @@ function MyMusicPage({ user, onBack, onLogout }) {
     const { name, value, type, checked } = e.target;
     setUploadForm({
       ...uploadForm,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
+
+  // Xử lý thay đổi input edit
+  const handleEditInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEditForm({
+      ...editForm,
       [name]: type === 'checkbox' ? checked : value
     });
   };
@@ -102,7 +127,8 @@ function MyMusicPage({ user, onBack, onLogout }) {
           musicFile: null
         });
         // Refresh list
-        const refreshResponse = await fetch('/api/songs/user/my-songs', {
+        const refreshUrl = user?.isAdmin ? '/api/songs' : '/api/songs/user/my-songs';
+        const refreshResponse = await fetch(refreshUrl, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -119,6 +145,64 @@ function MyMusicPage({ user, onBack, onLogout }) {
       console.error('Upload error:', error);
     } finally {
       setUploading(false);
+    }
+  };
+
+  // Bắt đầu chỉnh sửa bài hát
+  const handleStartEdit = (song) => {
+    setEditingSong(song);
+    setEditForm({
+      name: song.name,
+      singer: song.singer,
+      album: song.album,
+      genre: song.genre,
+      isPublic: song.isPublic,
+      image: song.image
+    });
+  };
+
+  // Hủy chỉnh sửa
+  const handleCancelEdit = () => {
+    setEditingSong(null);
+  };
+
+  // Lưu chỉnh sửa
+  const handleSaveEdit = async () => {
+    if (!editingSong) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/songs/${editingSong.id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editForm)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage('Cập nhật thành công!');
+        setEditingSong(null);
+        // Refresh list
+        const refreshUrl = user?.isAdmin ? '/api/songs' : '/api/songs/user/my-songs';
+        const refreshResponse = await fetch(refreshUrl, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const refreshData = await refreshResponse.json();
+        if (refreshResponse.ok) {
+          setSongs(refreshData);
+        }
+      } else {
+        setMessage(data.message || 'Cập nhật thất bại');
+      }
+    } catch (error) {
+      setMessage('Đã xảy ra lỗi');
+      console.error('Edit error:', error);
     }
   };
 
@@ -141,7 +225,8 @@ function MyMusicPage({ user, onBack, onLogout }) {
         setSongs(songs.filter(song => song.id !== songId));
         setMessage('Xóa bài hát thành công!');
       } else {
-        setMessage('Xóa thất bại');
+        const data = await response.json();
+        setMessage(data.message || 'Xóa thất bại');
       }
     } catch (error) {
       console.error('Delete error:', error);
@@ -194,6 +279,19 @@ function MyMusicPage({ user, onBack, onLogout }) {
             <i className="fas fa-music"></i>
             <span>D4T MP3</span>
           </div>
+          {user?.isAdmin && (
+            <span style={{ 
+              background: 'rgba(29, 185, 84, 0.2)', 
+              color: 'var(--d4t-primary)', 
+              padding: '4px 12px', 
+              borderRadius: '500px', 
+              fontSize: '12px',
+              fontWeight: '600'
+            }}>
+              <i className="fas fa-crown" style={{ marginRight: '6px' }}></i>
+              Admin
+            </span>
+          )}
         </div>
 
         <div className="d4t-header-right">
@@ -209,7 +307,7 @@ function MyMusicPage({ user, onBack, onLogout }) {
 
       <main className="d4t-main" style={{ paddingTop: '24px' }}>
         <h1 className="d4t-section-title" style={{ fontSize: '28px', marginBottom: '32px' }}>
-          Quản lý nhạc của tôi
+          {user?.isAdmin ? 'Quản lý tất cả nhạc' : 'Quản lý nhạc của tôi'}
         </h1>
 
         {/* Upload Form */}
@@ -386,10 +484,178 @@ function MyMusicPage({ user, onBack, onLogout }) {
           </form>
         </div>
 
+        {/* Edit Form */}
+        {editingSong && (
+          <div style={{ background: 'var(--d4t-dark-surface-light)', padding: '24px', borderRadius: '12px', marginBottom: '32px' }}>
+            <h2 style={{ marginBottom: '20px', fontSize: '20px' }}>Chỉnh sửa bài hát</h2>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', color: 'var(--d4t-text-secondary)', fontSize: '14px' }}>
+                  Tên bài hát
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={editForm.name}
+                  onChange={handleEditInputChange}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'var(--d4t-dark-surface)',
+                    border: '1px solid var(--d4t-border)',
+                    borderRadius: '8px',
+                    color: 'var(--d4t-text-primary)',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', color: 'var(--d4t-text-secondary)', fontSize: '14px' }}>
+                  Ca sĩ
+                </label>
+                <input
+                  type="text"
+                  name="singer"
+                  value={editForm.singer}
+                  onChange={handleEditInputChange}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'var(--d4t-dark-surface)',
+                    border: '1px solid var(--d4t-border)',
+                    borderRadius: '8px',
+                    color: 'var(--d4t-text-primary)',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', color: 'var(--d4t-text-secondary)', fontSize: '14px' }}>
+                  Album
+                </label>
+                <input
+                  type="text"
+                  name="album"
+                  value={editForm.album}
+                  onChange={handleEditInputChange}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'var(--d4t-dark-surface)',
+                    border: '1px solid var(--d4t-border)',
+                    borderRadius: '8px',
+                    color: 'var(--d4t-text-primary)',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', color: 'var(--d4t-text-secondary)', fontSize: '14px' }}>
+                  Thể loại
+                </label>
+                <select
+                  name="genre"
+                  value={editForm.genre}
+                  onChange={handleEditInputChange}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'var(--d4t-dark-surface)',
+                    border: '1px solid var(--d4t-border)',
+                    borderRadius: '8px',
+                    color: 'var(--d4t-text-primary)',
+                    outline: 'none'
+                  }}
+                >
+                  <option value="Pop">Pop</option>
+                  <option value="Rock">Rock</option>
+                  <option value="Hip Hop">Hip Hop</option>
+                  <option value="R&B">R&B</option>
+                  <option value="Jazz">Jazz</option>
+                  <option value="Electronic">Electronic</option>
+                  <option value="Ballad">Ballad</option>
+                  <option value="V-Pop">V-Pop</option>
+                </select>
+              </div>
+
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={{ display: 'block', marginBottom: '6px', color: 'var(--d4t-text-secondary)', fontSize: '14px' }}>
+                  URL ảnh bìa
+                </label>
+                <input
+                  type="text"
+                  name="image"
+                  value={editForm.image}
+                  onChange={handleEditInputChange}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'var(--d4t-dark-surface)',
+                    border: '1px solid var(--d4t-border)',
+                    borderRadius: '8px',
+                    color: 'var(--d4t-text-primary)',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  name="isPublic"
+                  checked={editForm.isPublic}
+                  onChange={handleEditInputChange}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                />
+                <span style={{ color: 'var(--d4t-text-secondary)' }}>
+                  Công khai (mọi người đều có thể nghe)
+                </span>
+              </label>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={handleSaveEdit}
+                style={{
+                  padding: '12px 32px',
+                  background: 'var(--d4t-primary)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '500px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Lưu thay đổi
+              </button>
+              <button
+                onClick={handleCancelEdit}
+                style={{
+                  padding: '12px 32px',
+                  background: 'var(--d4t-dark-surface)',
+                  color: 'var(--d4t-text-primary)',
+                  border: '1px solid var(--d4t-border)',
+                  borderRadius: '500px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Danh sách bài hát */}
         <div>
           <h2 style={{ marginBottom: '16px', fontSize: '20px' }}>
-            Bài hát của bạn ({songs.length})
+            {user?.isAdmin ? 'Tất cả bài hát' : 'Bài hát của bạn'} ({songs.length})
           </h2>
           
           {songs.length === 0 ? (
@@ -400,7 +666,7 @@ function MyMusicPage({ user, onBack, onLogout }) {
               background: 'var(--d4t-dark-surface-light)',
               borderRadius: '12px'
             }}>
-              Bạn chưa có bài hát nào. Hãy upload bài hát đầu tiên!
+              {user?.isAdmin ? 'Chưa có bài hát nào.' : 'Bạn chưa có bài hát nào. Hãy upload bài hát đầu tiên!'}
             </div>
           ) : (
             <div className="d4t-song-list">
@@ -428,20 +694,38 @@ function MyMusicPage({ user, onBack, onLogout }) {
                     <span style={{ color: 'var(--d4t-text-tertiary)', fontSize: '14px' }}>
                       {song.plays} lượt nghe
                     </span>
-                    <button
-                      onClick={() => handleDeleteSong(song.id)}
-                      style={{
-                        padding: '8px 16px',
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        color: '#ef4444',
-                        border: 'none',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        fontSize: '13px'
-                      }}
-                    >
-                      Xóa
-                    </button>
+                    {user?.isAdmin && (
+                      <>
+                        <button
+                          onClick={() => handleStartEdit(song)}
+                          style={{
+                            padding: '8px 16px',
+                            background: 'rgba(59, 130, 246, 0.1)',
+                            color: '#3b82f6',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '13px'
+                          }}
+                        >
+                          Sửa
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSong(song.id)}
+                          style={{
+                            padding: '8px 16px',
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            color: '#ef4444',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '13px'
+                          }}
+                        >
+                          Xóa
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               ))}
