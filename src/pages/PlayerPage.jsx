@@ -5,15 +5,17 @@ const fallbackSongs = [
     id: 'fallback-1',
     name: 'Lời anh muốn nói',
     singer: 'The Men',
-    path: '/assests/music/LoiAnhMuonNoi.mp3',
-    image: 'https://avatar-ex-swe.nixcdn.com/playlist/2013/11/06/c/c/a/8/1383713136679_500.jpg'
+    path: '/assests/music/LờiAnhMuốnNói.mp3',
+    image: 'https://avatar-ex-swe.nixcdn.com/playlist/2013/11/06/c/c/a/8/1383713136679_500.jpg',
+    album: 'Unknown Album'
   },
   {
     id: 'fallback-2',
     name: 'Thương Em Là Điều Anh Không Thể Ngờ',
     singer: 'Noo Phước Thịnh',
-    path: '/assests/music/ThuongEmLaDieuAnhKhongTheNgo.mp3',
-    image: 'https://i.ytimg.com/vi/NryZpeTgLeE/maxresdefault.jpg'
+    path: '/assests/music/ThươngEmLàĐiềuAnhKhôngThểNgờ.mp3',
+    image: 'https://i.ytimg.com/vi/NryZpeTgLeE/maxresdefault.jpg',
+    album: 'Unknown Album'
   }
 ]
 
@@ -28,6 +30,8 @@ function PlayerPage({ user, onLogout }) {
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
   const [volume, setVolume] = useState(1)
+  const [activeNav, setActiveNav] = useState('khám phá')
+  const [activeRegion, setActiveRegion] = useState('việt nam')
 
   const currentSong = songs[currentIndex] || null
 
@@ -36,7 +40,13 @@ function PlayerPage({ user, onLogout }) {
       try {
         const response = await fetch('/api/songs')
         const data = await response.json()
-        if (data?.length) setSongs(data)
+        if (data?.length) {
+          const songsWithAlbum = data.map(song => ({
+            ...song,
+            album: song.album || 'Unknown Album'
+          }))
+          setSongs(songsWithAlbum)
+        }
       } catch (error) {
         console.error(error)
       }
@@ -52,13 +62,14 @@ function PlayerPage({ user, onLogout }) {
   }, [search, songs])
 
   const formatTime = (value) => {
+    if (!value || isNaN(value)) return '0:00'
     const minutes = Math.floor(value / 60)
     const seconds = Math.floor(value % 60)
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
   const togglePlay = async () => {
-    const audio = document.getElementById('zing-audio')
+    const audio = document.getElementById('d4t-audio')
     if (!audio || !currentSong) return
 
     if (isPlaying) {
@@ -78,7 +89,7 @@ function PlayerPage({ user, onLogout }) {
     if (!songs.length) return
     if (isRandom) {
       let newIndex = Math.floor(Math.random() * songs.length)
-      while (newIndex === currentIndex) {
+      while (newIndex === currentIndex && songs.length > 1) {
         newIndex = Math.floor(Math.random() * songs.length)
       }
       setCurrentIndex(newIndex)
@@ -93,7 +104,7 @@ function PlayerPage({ user, onLogout }) {
   }
 
   useEffect(() => {
-    const audio = document.getElementById('zing-audio')
+    const audio = document.getElementById('d4t-audio')
     if (!audio || !currentSong) return
 
     audio.src = currentSong.path
@@ -105,7 +116,7 @@ function PlayerPage({ user, onLogout }) {
   }, [currentSong])
 
   useEffect(() => {
-    const audio = document.getElementById('zing-audio')
+    const audio = document.getElementById('d4t-audio')
     if (!audio) return
 
     const handleTimeUpdate = () => {
@@ -138,7 +149,7 @@ function PlayerPage({ user, onLogout }) {
   }, [currentSong, isRepeat, isRandom, currentIndex])
 
   useEffect(() => {
-    const audio = document.getElementById('zing-audio')
+    const audio = document.getElementById('d4t-audio')
     if (audio) audio.volume = volume
   }, [volume])
 
@@ -147,7 +158,7 @@ function PlayerPage({ user, onLogout }) {
     if (actualIndex !== -1) {
       setCurrentIndex(actualIndex)
       setTimeout(() => {
-        const audio = document.getElementById('zing-audio')
+        const audio = document.getElementById('d4t-audio')
         if (audio) {
           audio.play().then(() => setIsPlaying(true)).catch(err => console.log(err))
         }
@@ -156,7 +167,7 @@ function PlayerPage({ user, onLogout }) {
   }
 
   const handleProgressChange = (e) => {
-    const audio = document.getElementById('zing-audio')
+    const audio = document.getElementById('d4t-audio')
     if (!audio || !audio.duration) return
     const newProgress = Number(e.target.value)
     const seekTo = (newProgress / 100) * audio.duration
@@ -165,167 +176,180 @@ function PlayerPage({ user, onLogout }) {
   }
 
   return (
-    <div className="zing-container">
+    <div className="d4t-container">
       {/* TOP HEADER */}
-      <header className="zing-header">
-        <div className="zing-logo">
+      <header className="d4t-header">
+        <div className="d4t-logo">
           <i className="fas fa-music"></i>
-          <span>Zing MP3</span>
+          <span>D4T MP3</span>
         </div>
-        <div className="zing-search">
+        
+        <div className="d4t-search">
           <i className="fas fa-search"></i>
           <input
             type="text"
-            placeholder="Tìm kiếm bài hát, nghệ sĩ..."
+            placeholder="Tìm kiếm bài hát, nghệ sĩ, lời bài hát..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="zing-header-right">
-          <div className="zing-user">
+
+        <nav className="d4t-nav">
+          {['khám phá', 'top chart', 'radio', 'theo dõi'].map((item) => (
+            <div
+              key={item}
+              className={`d4t-nav-item ${activeNav === item ? 'active' : ''}`}
+              onClick={() => setActiveNav(item)}
+            >
+              {item}
+            </div>
+          ))}
+        </nav>
+
+        <div className="d4t-header-right">
+          <div className="d4t-user">
             <i className="fas fa-user-circle"></i>
             <span>{user.username}</span>
           </div>
-          <button className="zing-logout-btn" onClick={onLogout}>
+          <button className="d4t-logout-btn" onClick={onLogout}>
             Đăng xuất
           </button>
         </div>
       </header>
 
-      {/* MAIN WRAPPER */}
-      <div className="zing-main-wrapper">
-        {/* SIDEBAR */}
-        <aside className="zing-sidebar">
-          <div className="zing-sidebar-menu">
-            <div className="zing-sidebar-item active">
-              <i className="fas fa-home"></i>
-              <span>Trang chủ</span>
+      {/* MAIN CONTENT */}
+      <main className="d4t-main">
+        {/* TOP LINKS */}
+        <div className="d4t-top-links">
+          <button className="d4t-play-btn-main" onClick={togglePlay}>
+            <i className="fas fa-play"></i>
+            <span>Phát nhạc mới phát hành</span>
+          </button>
+          
+          {['nhạc mới', 'thể loại', 'top 100', 'mv', 'gần đây'].map((item) => (
+            <div
+              key={item}
+              className="d4t-top-link"
+              onClick={() => console.log(item)}
+            >
+              <i className={`fas fa-${item === 'nhạc mới' ? 'music' : item === 'thể loại' ? 'th' : item === 'top 100' ? 'star' : item === 'mv' ? 'video' : 'history'}`}></i>
+              <span>{item}</span>
             </div>
-            <div className="zing-sidebar-item">
-              <i className="fas fa-compass"></i>
-              <span>Khám phá</span>
-            </div>
-            <div className="zing-sidebar-item">
-              <i className="fas fa-chart-line"></i>
-              <span>Top 100</span>
-            </div>
-            <div className="zing-sidebar-item">
-              <i className="fas fa-heart"></i>
-              <span>Yêu thích</span>
-            </div>
-          </div>
-        </aside>
+          ))}
+        </div>
 
-        {/* MAIN CONTENT */}
-        <main className="zing-main">
-          {/* HERO */}
-          <section className="zing-hero">
-            <div className="zing-hero-content">
-              <div className="zing-hero-badge">Đang phát</div>
-              <h1 className="zing-hero-title">{currentSong?.name || 'Chọn một bài hát'}</h1>
-              <p className="zing-hero-artist">{currentSong?.singer || 'Zing MP3'} • {songs.length} bài hát</p>
-            </div>
-          </section>
+        {/* REGION TABS */}
+        <div className="d4t-region-tabs">
+          {['việt nam', 'quốc tế'].map((region) => (
+            <button
+              key={region}
+              className={`d4t-region-tab ${activeRegion === region ? 'active' : ''}`}
+              onClick={() => setActiveRegion(region)}
+            >
+              {region}
+            </button>
+          ))}
+        </div>
 
-          {/* SONG LIST */}
-          <section>
-            <h2 className="zing-section-title">Danh sách phát</h2>
-            <div className="zing-song-list">
-              {visibleSongs.map((song, index) => {
-                const isCurrent = currentSong?.id === song.id;
-                const originalIndex = songs.findIndex(s => s.id === song.id);
-                return (
-                  <div
-                    key={song.id}
-                    className={`zing-song-item ${isCurrent ? 'active' : ''}`}
-                    onClick={() => handleSongClick(song, index)}
-                  >
-                    <div className="zing-song-num">
-                      {isCurrent && isPlaying ? (
-                        <div className="zing-playing-indicator">
-                          <span className="zing-playing-bar"></span>
-                          <span className="zing-playing-bar"></span>
-                          <span className="zing-playing-bar"></span>
-                          <span className="zing-playing-bar"></span>
-                        </div>
-                      ) : (
-                        <span>{originalIndex + 1}</span>
-                      )}
-                    </div>
-                    <img src={song.image} alt={song.name} className="zing-song-thumb" />
-                    <div className="zing-song-info">
-                      <div className="zing-song-name">{song.name}</div>
-                      <div className="zing-song-singer">{song.singer}</div>
-                    </div>
-                    <div className="zing-song-duration">{formatTime(240)}</div>
-                    <button className="zing-song-play-btn">
-                      <i className={isCurrent && isPlaying ? 'fas fa-pause' : 'fas fa-play'}></i>
-                    </button>
+        {/* SONG LIST */}
+        <section>
+          <h2 className="d4t-section-title">Top Chart</h2>
+          <div className="d4t-song-list">
+            {visibleSongs.map((song, index) => {
+              const isCurrent = currentSong?.id === song.id;
+              const originalIndex = songs.findIndex(s => s.id === song.id);
+              return (
+                <div
+                  key={song.id}
+                  className={`d4t-song-item ${isCurrent ? 'active' : ''}`}
+                  onClick={() => handleSongClick(song, index)}
+                >
+                  <div className="d4t-song-num">
+                    {isCurrent && isPlaying ? (
+                      <div className="d4t-playing-indicator">
+                        <span className="d4t-playing-bar"></span>
+                        <span className="d4t-playing-bar"></span>
+                        <span className="d4t-playing-bar"></span>
+                        <span className="d4t-playing-bar"></span>
+                      </div>
+                    ) : (
+                      <span>{originalIndex + 1}</span>
+                    )}
                   </div>
-                );
-              })}
-            </div>
-          </section>
-        </main>
-      </div>
+                  <img src={song.image} alt={song.name} className="d4t-song-thumb" />
+                  <div className="d4t-song-info">
+                    <div className="d4t-song-name">{song.name}</div>
+                    <div className="d4t-song-singer">{song.singer}</div>
+                  </div>
+                  <div className="d4t-song-album">{song.album}</div>
+                  <div className="d4t-song-duration">{formatTime(240)}</div>
+                  <button className="d4t-song-play-btn">
+                    <i className={isCurrent && isPlaying ? 'fas fa-pause' : 'fas fa-play'}></i>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </main>
 
       {/* BOTTOM PLAYER */}
-      <footer className="zing-player">
-        <div className="zing-player-left">
+      <footer className="d4t-player">
+        <div className="d4t-player-left">
           {currentSong && (
             <>
-              <img src={currentSong.image} alt={currentSong.name} className="zing-player-thumb" />
-              <div className="zing-player-info">
-                <div className="zing-player-name">{currentSong.name}</div>
-                <div className="zing-player-artist">{currentSong.singer}</div>
+              <img src={currentSong.image} alt={currentSong.name} className="d4t-player-thumb" />
+              <div className="d4t-player-info">
+                <div className="d4t-player-name">{currentSong.name}</div>
+                <div className="d4t-player-artist">{currentSong.singer}</div>
               </div>
-              <button className="zing-player-like">
+              <button className="d4t-player-like">
                 <i className="far fa-heart"></i>
               </button>
             </>
           )}
         </div>
 
-        <div className="zing-player-center">
-          <div className="zing-player-controls">
+        <div className="d4t-player-center">
+          <div className="d4t-player-controls">
             <button
-              className={`zing-player-btn ${isRandom ? 'active' : ''}`}
+              className={`d4t-player-btn ${isRandom ? 'active' : ''}`}
               onClick={() => setIsRandom(!isRandom)}
             >
               <i className="fas fa-random"></i>
             </button>
-            <button className="zing-player-btn" onClick={playPrev}>
+            <button className="d4t-player-btn" onClick={playPrev}>
               <i className="fas fa-step-backward"></i>
             </button>
-            <button className="zing-player-play-btn" onClick={togglePlay}>
+            <button className="d4t-player-play-btn" onClick={togglePlay}>
               <i className={isPlaying ? 'fas fa-pause' : 'fas fa-play'}></i>
             </button>
-            <button className="zing-player-btn" onClick={playNext}>
+            <button className="d4t-player-btn" onClick={playNext}>
               <i className="fas fa-step-forward"></i>
             </button>
             <button
-              className={`zing-player-btn ${isRepeat ? 'active' : ''}`}
+              className={`d4t-player-btn ${isRepeat ? 'active' : ''}`}
               onClick={() => setIsRepeat(!isRepeat)}
             >
               <i className="fas fa-redo"></i>
             </button>
           </div>
-          <div className="zing-player-progress">
-            <span className="zing-player-time">{formatTime(currentTime)}</span>
+          <div className="d4t-player-progress">
+            <span className="d4t-player-time">{formatTime(currentTime)}</span>
             <input
               type="range"
               min="0"
               max="100"
               value={progress}
               onChange={handleProgressChange}
-              className="zing-player-slider"
+              className="d4t-player-slider"
             />
-            <span className="zing-player-time">{formatTime(duration)}</span>
+            <span className="d4t-player-time">{formatTime(duration)}</span>
           </div>
         </div>
 
-        <div className="zing-player-right">
-          <div className="zing-player-volume">
+        <div className="d4t-player-right">
+          <div className="d4t-player-volume">
             <i className={volume === 0 ? 'fas fa-volume-mute' : volume < 0.5 ? 'fas fa-volume-down' : 'fas fa-volume-up'}></i>
             <input
               type="range"
@@ -334,14 +358,13 @@ function PlayerPage({ user, onLogout }) {
               step="0.01"
               value={volume}
               onChange={(e) => setVolume(Number(e.target.value))}
-              className="zing-player-volume-slider"
+              className="d4t-player-volume-slider"
             />
-            <span className="zing-player-volume-percent">{Math.round(volume * 100)}%</span>
           </div>
         </div>
       </footer>
 
-      <audio id="zing-audio" preload="metadata" />
+      <audio id="d4t-audio" preload="metadata" />
     </div>
   )
 }
